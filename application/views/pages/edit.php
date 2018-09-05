@@ -106,6 +106,18 @@ if (isset($this->session->userdata['logged_in'])) {
 						    <span>Add Feedback</span>
 						</a>
 					</li>
+					<li>
+						<a href="<?php echo base_url() ?>deals">
+						    <i class="ion-ios-undo"></i> 
+						    <span>Closed Deals</span>
+						</a>
+					</li>
+					<li>
+						<a href="<?php echo base_url() ?>add_claims">
+						    <i class="ion-ios-undo"></i> 
+						    <span>Add Claims</span>
+						</a>
+					</li>
 				</ul>
 				<!-- end sidebar user -->
 	
@@ -191,7 +203,13 @@ if (isset($this->session->userdata['logged_in'])) {
                                             
                                         </select>
                                     </div>
-                                </div>            
+                                </div>      
+								<div class="form-group">
+                                    <label class="col-md-3 control-label">Password (leave blank for unchanged)</label>
+                                    <div class="col-md-9">
+                                        <input name="password"  type="password" class="form-control" placeholder="Default input" />
+                                    </div>
+                                </div>      
                                 <div class="form-group">
                                     <label class="col-md-3 control-label">Submit</label>
                                     <div class="col-md-9">

@@ -6,11 +6,16 @@
 if (isset($this->session->userdata['logged_in'])) {
 	$name = ($this->session->userdata['logged_in']['name']);
 	$username = ($this->session->userdata['logged_in']['username']);
+	$admin = ($this->session->userdata['logged_in']['admin']);
 	} else {
 	header("location: login");
 	}
+	if(!$admin){
+        header("location: user_main");
+
+    }
 ?>
-?>	
+
 	<!-- begin #page-container -->
 	<div id="page-container" class="fade page-sidebar-fixed page-header-fixed">
 		<!-- begin #header -->
@@ -128,6 +133,18 @@ if (isset($this->session->userdata['logged_in'])) {
 						<a href="<?php echo base_url() ?>add_feedback">
 						    <i class="ion-ios-undo"></i> 
 						    <span>Add Feedback</span>
+						</a>
+					</li>
+					<li>
+						<a href="<?php echo base_url() ?>deals">
+						    <i class="ion-ios-undo"></i> 
+						    <span>Closed Deals</span>
+						</a>
+					</li>
+					<li>
+						<a href="<?php echo base_url() ?>add_claims">
+						    <i class="ion-ios-undo"></i> 
+						    <span>Add Claims</span>
 						</a>
 					</li>
 				</ul>

@@ -3,20 +3,20 @@
 	//$this -> load -> session();
 	//session_start();
 //print_r($this->session->userdata['logged_in']);
-if (isset($this->session->userdata['logged_in']) && $admin == 1) {
+if (isset($this->session->userdata['logged_in'])) {
 	$name = ($this->session->userdata['logged_in']['name']);
-	$admin = ($this->session->userdata['logged_in']['username']);
-
-	$username = ($this->session->userdata['logged_in']['username']);
-	}
-	 else {
+    $username = ($this->session->userdata['logged_in']['username']);
+    $admin = ($this->session->userdata['logged_in']['admin']);
+	} else {
 	header("location: login");
     }
-	if(!$admin){
+    if(!$admin){
         header("location: user_main");
 
     }
-    $info = $info[0];
+$res=$this->member_management->get_deals();
+
+
 ?>
 
 	<!-- begin #page-container -->
@@ -27,7 +27,7 @@ if (isset($this->session->userdata['logged_in']) && $admin == 1) {
 			<div class="container-fluid">
 				<!-- begin mobile sidebar expand / collapse button -->
 				<div class="navbar-header">
-					<a href="index.html" style="width:300px;" class="navbar-brand"><span class="navbar-logo"><i class="ion-ios-cloud"></i></span> <b>CSI-RAIT</b> SPONSORSHIP</a>
+					<a style="width:300px" href="<?=base_url()?>members" class="navbar-brand"><span class="navbar-logo"><i class="ion-ios-cloud"></i></span> <b>CSI-RAIT</b> SPONSORSHIP</a>
 					<button type="button" class="navbar-toggle" data-click="sidebar-toggled">
 						<span class="icon-bar"></span>
 						<span class="icon-bar"></span>
@@ -43,7 +43,7 @@ if (isset($this->session->userdata['logged_in']) && $admin == 1) {
 				<!-- end mobile sidebar expand / collapse button -->
 				
 				<!-- begin navbar-collapse -->
-              
+                
 				<!-- end navbar-collapse -->
 				
 				<!-- begin header navigation right -->
@@ -93,41 +93,37 @@ if (isset($this->session->userdata['logged_in']) && $admin == 1) {
 						    <i class="ion-ios-pulse-strong"></i> 
 						    <span>Member Management</span>
 						</a>
-                    </li>
-                    <li>
+					</li>
+					<li>
                             <a href="<?php echo base_url() ?>add_members">
                                 <i class="ion-ios-people m-r-5 f-s-20 pull-left"></i> Add Members
                             </a>
 						</li>
-						
-					
                         <li>
 						<a href="<?php echo base_url() ?>user_main">
 						    <i class="ion-ios-list-outline"></i> 
 						    <span>Targets</span>
 						</a>
                     </li>
-					<?php if($admin){ ?>
                     <li>
 						<a href="<?php echo base_url() ?>add_target">
 						    <i class="ion-ios-undo"></i> 
 						    <span>Add Target</span>
 						</a>
 					</li>
-						<?php } ?>
                     <li>
 						<a href="<?php echo base_url() ?>add_feedback">
 						    <i class="ion-ios-undo"></i> 
 						    <span>Add Feedback</span>
 						</a>
 					</li>
-					<li>
+                    <li>
 						<a href="<?php echo base_url() ?>deals">
 						    <i class="ion-ios-undo"></i> 
 						    <span>Closed Deals</span>
 						</a>
 					</li>
-					<li>
+                    <li>
 						<a href="<?php echo base_url() ?>add_claims">
 						    <i class="ion-ios-undo"></i> 
 						    <span>Add Claims</span>
@@ -141,20 +137,19 @@ if (isset($this->session->userdata['logged_in']) && $admin == 1) {
 		</div>
 		<div class="sidebar-bg"></div>
 		<!-- end #sidebar -->
-        <div id="content" class="content">
-			<!-- begin breadcrumb -->
+        <div style="padding-top:50px;" id="content" class="content">
 			
 			<!-- end breadcrumb -->
 			<!-- begin page-header -->
-			<h1 class="page-header">Edit Members <small>enter details here...</small></h1>
+			<h1 class="page-header">Closed Deals <small>add and remove members here...</small></h1>
 			<!-- end page-header -->
 			
 			<!-- begin row -->
 			<div class="row">
-                <!-- begin col-6 -->
-			    <div class="col-md-6">
+			    <!-- begin col-12 -->
+			    <div class="col-md-12">
 			        <!-- begin panel -->
-                    <div class="panel panel-inverse" data-sortable-id="form-stuff-1">
+                    <div class="panel panel-inverse">
                         <div class="panel-heading">
                             <div class="panel-heading-btn">
                                 <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-default" data-click="panel-expand"><i class="fa fa-expand"></i></a>
@@ -162,57 +157,58 @@ if (isset($this->session->userdata['logged_in']) && $admin == 1) {
                                 <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-warning" data-click="panel-collapse"><i class="fa fa-minus"></i></a>
                                 <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-danger" data-click="panel-remove"><i class="fa fa-times"></i></a>
                             </div>
-                            <h4 class="panel-title">Member Form</h4>
+                            <h4 class="panel-title">Deals Table - Default</h4>
                         </div>
                         <div class="panel-body">
-                        <form action="<?php echo base_url()?>Target/editSubmit" method="post" class="form-horizontal">
-                                <input name="id" value="<?=$info->id?>" class="hidden">
-                                <div class="form-group">
-                                    <label class="col-md-3 control-label">Name</label>
-                                    <div class="col-md-9">
-                                        <input name="name" value="<?=$info->name?>" type="text" class="form-control" placeholder="Name"  />
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="col-md-3 control-label">Address</label>
-                                    <div class="col-md-9">
-                                        <textarea name="address"  type="text" class="form-control" placeholder="Address input"><?=$info->address?></textarea>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="col-md-3 control-label">Mobile Number</label>
-                                    <div class="col-md-9">
-                                        <input name="mobile_number" value="<?=$info->mobile_number?>" type="text" class="form-control" placeholder="Default input" />
-                                    </div>
-                                </div>      
-                                <div class="form-group">
-                                    <label class="col-md-3 control-label">Instructions</label>
-                                    <div class="col-md-9">
-                                        <input name="instructions" value="<?=$info->instructions?>" type="text" class="form-control" placeholder="Default input" />
-                                    </div>
-                                </div>   
-                                <div class="form-group">
-                                    <label class="col-md-3 control-label">Submit</label>
-                                    <div class="col-md-9">
-                                        <button type="submit" class="btn btn-sm btn-success">Edit Target</button>
-                                    </div>
-                                </div>
-                            </form>
+                            <table id="data-table" class="table table-striped table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Sr No.</th>
+                                        <th>Name</th>
+                                        <th>Mobile Number</th>
+                                        <th>Amount</th>
+                                        
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                <?php if($res){
+                                  //  print_r($res);
+                                    $i = 0;
+                                    foreach($res as $row){
+                                        $i++;
+                                        $amount = $this->member_management->get_amount_from_id($row->id);
+                                         ?>
+                                <tr>
+                                   <td>
+                                <?=$i?>
+                                   </td>
+                                   <td>
+                                <?=$row->name?>
+                                   </td>
+                                   <td>
+                                <?=$row->mobile_number?>
+                                   </td>
+                                   <td>
+                                <?=$amount?>
+                                   </td>
+                                
+                                   </tr>
+                                <?php }} ?>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                     <!-- end panel -->
                 </div>
-                <!-- end col-6 -->
-                <!-- begin col-6 -->
-              
+                <!-- end col-12 -->
             </div>
             <!-- end row -->
-           
-            <!-- end row -->
-            <!-- begin row -->
-            
-            <!-- end row -->
 		</div>
+			        <!-- begin panel -->
+                    
+                    <!-- end panel -->
+                
 
         <!-- end theme-panel -->
 		
@@ -220,6 +216,44 @@ if (isset($this->session->userdata['logged_in']) && $admin == 1) {
 		<a href="javascript:;" class="btn btn-icon btn-circle btn-primary btn-scroll-to-top fade" data-click="scroll-top"><i class="fa fa-angle-up"></i></a>
 		<!-- end scroll to top btn -->
 	</div>
+    <script>
+    function deleteUser(id){    
+        swal({
+  title: "Are you sure?",
+  text: "You will not be able to recover this data!",
+  type: "warning",
+  showCancelButton: true,
+  confirmButtonClass: "btn-danger",
+  confirmButtonText: "Yes, delete!",
+  closeOnConfirm: false
+},
+function(){
+    $.ajax({
+                type: 'POST',
+                url: 'Member/ajax_deleteuser',
+                data:{
+                    'id':id,
+                },
+                cache:false,
+                
+                success: function(resp){
+                    //console.log(resp);
+                    if(resp == 'success'){
+                       //sendDelivery(id);
+                      window.location = '';
+                     // window.location = '';
+
+                    }
+
+            }
+        });
+});
+
+        
+    }
+    
+    
+    </script>
 	<!-- end page container -->
 	
 

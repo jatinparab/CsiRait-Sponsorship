@@ -6,15 +6,20 @@
 if (isset($this->session->userdata['logged_in'])) {
 	$name = ($this->session->userdata['logged_in']['name']);
 	$username = ($this->session->userdata['logged_in']['username']);
+	$admin = ($this->session->userdata['logged_in']['admin']);
+
 	} else {
 	header("location: login");
     }
-    
+    if(!$admin){
+        header("location: user_main");
+
+    }
 $res=$this->member_management->read_member_info();
 
 
 ?>
-?>	
+	
 	<!-- begin #page-container -->
 	<div id="page-container" class="fade page-sidebar-fixed page-header-fixed">
 		<!-- begin #header -->
@@ -113,6 +118,13 @@ $res=$this->member_management->read_member_info();
 						    <span>Add Feedback</span>
 						</a>
 					</li>
+					<li>
+						<a href="<?php echo base_url() ?>add_claims">
+						    <i class="ion-ios-undo"></i> 
+						    <span>Add Claims</span>
+						</a>
+					</li>
+					
 				</ul>
 				<!-- end sidebar user -->
 	
@@ -178,7 +190,8 @@ $res=$this->member_management->read_member_info();
                                    <a href="<?=base_urL()?>Member/edit/<?=$row->id?>" class="btn btn-info">Edit</a>
                                   
                                    <a style="margin:3px;"  onclick="deleteUser('<?=$row->id?>')" class="btn btn-danger">Delete</a>
-                                
+								   <a href="<?=base_urL()?>Member/claims/<?=$row->id?>" class="btn btn-info">View Claims</a>
+
                                    </td>
                                    </tr>
                                 <?php }} ?>

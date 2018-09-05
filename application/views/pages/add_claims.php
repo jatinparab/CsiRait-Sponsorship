@@ -5,15 +5,19 @@
 //print_r($this->session->userdata['logged_in']);
 if (isset($this->session->userdata['logged_in'])) {
 	$name = ($this->session->userdata['logged_in']['name']);
-	$username = ($this->session->userdata['logged_in']['username']);
-	$admin = ($this->session->userdata['logged_in']['admin']);
+    $username = ($this->session->userdata['logged_in']['username']);
+    $admin = ($this->session->userdata['logged_in']['admin']);
 	} else {
 	header("location: login");
-	}
-	$id = $this->member_management->get_id_from_username($username);
+    }
+    $id = $this->member_management->get_id_from_username($username);
+   
+    if($admin){
+        header("location: user_main");
 
+    }
 ?>
-	
+
 	<!-- begin #page-container -->
 	<div id="page-container" class="fade page-sidebar-fixed page-header-fixed">
 		<!-- begin #header -->
@@ -22,7 +26,7 @@ if (isset($this->session->userdata['logged_in'])) {
 			<div class="container-fluid">
 				<!-- begin mobile sidebar expand / collapse button -->
 				<div class="navbar-header">
-					<a href="index.html" style="width:300px;" class="navbar-brand"><span class="navbar-logo"><i class="ion-ios-cloud"></i></span> <b>CSI-RAIT</b> SPONSORSHIP</a>
+					<a href="index.html" style="width:290px;" class="navbar-brand"><span class="navbar-logo"><i class="ion-ios-cloud"></i></span> <b>CSI-RAIT</b> SPONSORSHIP</a>
 					<button type="button" class="navbar-toggle" data-click="sidebar-toggled">
 						<span class="icon-bar"></span>
 						<span class="icon-bar"></span>
@@ -38,27 +42,7 @@ if (isset($this->session->userdata['logged_in'])) {
 				<!-- end mobile sidebar expand / collapse button -->
 				
 				<!-- begin navbar-collapse -->
-                <div class="collapse navbar-collapse pull-left" id="top-navbar">
-                    <ul class="nav navbar-nav">
-                        
-                        
-						
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                <i class="ion-ios-compose f-s-20 pull-left m-r-5"></i> New <b class="caret"></b>
-                            </a>
-                            <ul class="dropdown-menu" role="menu">
-                                <li><a href="#">Action</a></li>
-                                <li><a href="#">Another action</a></li>
-                                <li><a href="#">Something else here</a></li>
-                                <li class="divider"></li>
-                                <li><a href="#">Separated link</a></li>
-                                <li class="divider"></li>
-                                <li><a href="#">One more separated link</a></li>
-                            </ul>
-                        </li>
-                    </ul>
-                </div>
+               
 				<!-- end navbar-collapse -->
 				
 				<!-- begin header navigation right -->
@@ -172,7 +156,7 @@ if (isset($this->session->userdata['logged_in'])) {
 			
 			<!-- end breadcrumb -->
 			<!-- begin page-header -->
-			<h1 class="page-header">Add Feedback <small>enter details here...</small></h1>
+			<h1 class="page-header">Add Claims <small>enter details here...</small></h1>
 			<!-- end page-header -->
 			
 			<!-- begin row -->
@@ -188,59 +172,29 @@ if (isset($this->session->userdata['logged_in'])) {
                                 <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-warning" data-click="panel-collapse"><i class="fa fa-minus"></i></a>
                                 <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-danger" data-click="panel-remove"><i class="fa fa-times"></i></a>
                             </div>
-                            <h4 class="panel-title">Feedback Form</h4>
+                            <h4 class="panel-title">Claim Form</h4>
                         </div>
                         <div class="panel-body">
-                            <form action="<?php echo base_url()?>Feedback/addFeedback" method="post" class="form-horizontal">
-                            <div class="form-group">
-                            <input class="hidden" name="submitted_by" value="<?=$this->feedback_management->get_id_from_roll_number($username);?>" />
+                            <form action="<?php echo base_url()?>Member/addClaim" method="post" class="form-horizontal">
+                                    <input name="member_id" class="hidden" type="text" class="form-control" value="<?=$id?>"  />
 
-                                    <label class="col-md-3 control-label">Target</label>
+                                <div class="form-group">
+                                    <label class="col-md-3 control-label">Reason</label>
                                     <div class="col-md-9">
-                                    <select name="target_id" class="form-control selectpicker" data-size="10" data-live-search="true">
-                                            <option value="" selected>Select a Target</option>
-                                           
-                                            <?php $targets = $this->feedback_management->get_target_list($username);
-                                               // print_r($targets);
-                                                foreach($targets as $target){
-                                            ?>
-                                             <option value="<?=$target->id?>"><?=$target->name?></option>
-                                            <?php } ?>
-                                        </select>                                    </div>
-                                </div>
-                            <div class="form-group">
-                                    <label class="col-md-3 control-label"> Date Visited</label>
-                                    <div class="col-md-9">
-                                        <input type="text" name="date_visited" class="form-control" id="datepicker-autoClose" placeholder="Auto Close Datepicker" />
+                                        <input name="reason" type="text" class="form-control" placeholder="reason"  />
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-md-3 control-label">Members Visited</label>
+                                    <label class="col-md-3 control-label">Amount</label>
                                     <div class="col-md-9">
-                                    <select name="people_visited[]" class="multiple-select2 form-control" multiple="multiple">
-                                        <?php
-                                        $members = $this->member_management->read_member_info();
-                                                foreach($members as $member){ ?>
-                                                    <option value="<?=$member->id?>"><?=$member->name?></option>
-
-                                        
-                                        ?>
-                                        <?php } ?>
-</select>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="col-md-3 control-label">Feedback</label>
-                                    <div class="col-md-9">
-                                        <textarea  name="feedback_content" type="text" class="form-control" placeholder="Default input"> </textarea>
+                                        <textarea name="value" type="text" class="form-control" placeholder="Amount input"></textarea>
                                     </div>
                                 </div>
                                 
-                                           
                                 <div class="form-group">
                                     <label class="col-md-3 control-label">Submit</label>
                                     <div class="col-md-9">
-                                        <button type="submit" class="btn btn-sm btn-success">Add Feedback</button>
+                                        <button type="submit" class="btn btn-sm btn-success">Add Target</button>
                                     </div>
                                 </div>
                             </form>

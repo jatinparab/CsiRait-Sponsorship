@@ -19,12 +19,16 @@ Class Feedback_Management extends CI_Model{
             foreach($quer as $query_obj){
                 array_push($targets,$query_obj->target_id);
             }
+            if(count($targets)>0){
             $this->db->select('*');
             $this->db->from('targets');
             $this->db->where_in('id',$targets);
             $this->db->where('done',0);
             $results = $this->db->get()->result();
             return $results;
+            }else{
+                return false;
+            }
         }else{
             $this->db->select('*');
             $this->db->from('targets');

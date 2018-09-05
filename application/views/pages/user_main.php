@@ -12,7 +12,8 @@ if (isset($this->session->userdata['logged_in'])) {
 	}
 
 $res = $this->target_management->read_all_targets();
-	echo $username;
+$id = $this->member_management->get_id_from_username($username);
+//	echo $username;
 
 ?>
 
@@ -119,7 +120,28 @@ $res = $this->target_management->read_all_targets();
 						    <span>Add Feedback</span>
 						</a>
 					</li>
-                    
+					<?php if($admin){ ?>
+					<li>
+						<a href="<?php echo base_url() ?>deals">
+						    <i class="ion-ios-undo"></i> 
+						    <span>Closed Deals</span>
+						</a>
+					</li>
+					<?php } ?>
+					<li>
+						<a href="<?php echo base_url() ?>add_claims">
+						    <i class="ion-ios-undo"></i> 
+						    <span>Add Claims</span>
+						</a>
+					</li>
+					<?php if(!$admin){ ?>
+					<li>
+						<a href="<?php echo base_url() ?>Member/claims/<?=$id?>">
+						    <i class="ion-ios-undo"></i> 
+						    <span>View Claims</span>
+						</a>
+					</li>
+                    <?php } ?>
 				</ul>
 				<!-- end sidebar user -->
 	
@@ -139,8 +161,17 @@ $res = $this->target_management->read_all_targets();
 			<!-- begin row -->
 			<div class="row">
 				<!-- begin col-6 -->
-			<?php if(count($res)>0){
+			<?php 
+			
+			if($res){
+				
+				if(!$admin){
+				$res = $this->target_management->filter_from_targets($username,$res);
+				}
+				//print_r($res1);
+				
 				foreach($res as $row){ ?>
+				
 			    <div class="col-md-6">
 			        <!-- begin panel -->
 			        
@@ -345,25 +376,31 @@ function(){
 		function close_deal(id){
 			swal({
   title: "Are you sure?",
-  text: "You will not be able to revert!",
-  type: "success",
+  text: "Enter the amount of deal",
+  type: "input",
   showCancelButton: true,
   confirmButtonClass: "btn-success",
   confirmButtonText: "Confirm this deal.",
   closeOnConfirm: false
 },
-function(){
+function(inputValue){
+	if (inputValue === false) return false;
+  if (inputValue === "") {
+    swal.showInputError("You need to write something!");
+    return false
+  }
     $.ajax({
                 type: 'POST',
                 url: 'Target/confirm_deal',
                 data:{
-                    'id':id
+                    'id':id,
+					'value':inputValue
                 },
                 success: function(resp){
                     //console.log(resp);
                     if(resp == 'success'){
                        //sendDelivery(id);
-                      window.location = '';
+                      window.location = 'deals';
                      // window.location = '';
 
                     }

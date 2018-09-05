@@ -58,7 +58,9 @@ Class Target_Management extends CI_Model{
         return false;
         }
     }
-    public function closedeal($id){
+    public function closedeal($id,$value){
+        $da = array('id'=>$id,'value' => $value);
+        $this->db->insert('deals',$da);
         $this->db->set('done', 1);
         $this->db->where('id', $id);
         if($this->db->update('targets')){
@@ -66,6 +68,34 @@ Class Target_Management extends CI_Model{
         }else{
             return false;
         }
+    }
+    public function filter_from_targets($username,$res){
+        $this->db->select('*');
+        $this->db->from('members');
+        $this->db->where('roll_number',$username);
+        $query = $this->db->get();
+        if ($query->num_rows() >0) {
+        $id = $query->result()[0]->id;
+        $this->db->select('target_id');
+        $this->db->from('target_member_mapping');
+        $this->db->where('member_id',$id);
+        $yep =  $this->db->get()->result();
+        $map = array();
+        foreach($yep as $f){
+            array_push($map,$f->target_id);
+
+        }
+        $res2 = array();
+        foreach($res as $x){
+            if(in_array($x->id,$map)){
+                array_push($res2,$x);
+            }
+        }
+        return $res2;
+        }
+        
+        
+
     }
     public function read_target_for_user($id) {
         $condition = "id =".$id;

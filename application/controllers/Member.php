@@ -41,6 +41,14 @@ class Member extends CI_Controller {
         echo 'error';
     }
  }
+ public function ajax_sealclaim(){
+    $id = $this->input->post('id');
+    if($this->member_management->sealclaim($id)){
+        echo 'success';
+    }else{
+        echo 'error';
+    }
+ }
  public function editSubmit(){
     // $this->load->library('password');
      
@@ -50,13 +58,32 @@ class Member extends CI_Controller {
      'roll_number' => $this->input->post('roll_number'),
      'mobile_number' => $this->input->post('mobile_number'),
      'branch' => $this->input->post('branch'),
-     'year' => $this->input->post('year')
+     'year' => $this->input->post('year'),
+     'password' => $this->input->post('password')
      );
    ///
    if($this->member_management->editmembers($data)){
        redirect('/members');
    }
  //redirect('/logout');
+}
+
+public function addClaim(){
+    $data = array(
+        'member_id' => $this->input->post('member_id'),
+        'reason' => $this->input->post('reason'),
+        'value' => $this->input->post('value'),
+        );
+        if($this->member_management->addclaim($data)){
+            redirect('/Member/claims/'.$data['member_id']);
+        }
+}
+public function claims($id){
+    $data['claims'] = $this->member_management->get_claims_from_id($id);
+    $data['member_info']= $this->member_management->get_user_info_from_id($id);
+      $this -> load -> view('templates/header',$data);
+      $this -> load -> view('pages/claims',$data);
+      $this -> load -> view('templates/footer',$data);  
 }
 
  public function edit($id){

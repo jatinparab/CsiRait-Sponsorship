@@ -5,15 +5,24 @@
 //print_r($this->session->userdata['logged_in']);
 if (isset($this->session->userdata['logged_in'])) {
 	$name = ($this->session->userdata['logged_in']['name']);
-	$username = ($this->session->userdata['logged_in']['username']);
-	$admin = ($this->session->userdata['logged_in']['admin']);
+    $username = ($this->session->userdata['logged_in']['username']);
+    $admin = ($this->session->userdata['logged_in']['admin']);
+
 	} else {
 	header("location: login");
-	}
-	$id = $this->member_management->get_id_from_username($username);
+    }
+
+    $id = $this->member_management->get_id_from_username($username);
+    //print_r();
+    if($id!=$member_info[0]->id && !$admin){
+        header("location: ../../user_main");
+    }
+    
+//$res=$this->claims_management->get_deals();
+
 
 ?>
-	
+
 	<!-- begin #page-container -->
 	<div id="page-container" class="fade page-sidebar-fixed page-header-fixed">
 		<!-- begin #header -->
@@ -22,7 +31,7 @@ if (isset($this->session->userdata['logged_in'])) {
 			<div class="container-fluid">
 				<!-- begin mobile sidebar expand / collapse button -->
 				<div class="navbar-header">
-					<a href="index.html" style="width:300px;" class="navbar-brand"><span class="navbar-logo"><i class="ion-ios-cloud"></i></span> <b>CSI-RAIT</b> SPONSORSHIP</a>
+					<a style="width:300px" href="<?=base_url()?>members" class="navbar-brand"><span class="navbar-logo"><i class="ion-ios-cloud"></i></span> <b>CSI-RAIT</b> SPONSORSHIP</a>
 					<button type="button" class="navbar-toggle" data-click="sidebar-toggled">
 						<span class="icon-bar"></span>
 						<span class="icon-bar"></span>
@@ -38,27 +47,7 @@ if (isset($this->session->userdata['logged_in'])) {
 				<!-- end mobile sidebar expand / collapse button -->
 				
 				<!-- begin navbar-collapse -->
-                <div class="collapse navbar-collapse pull-left" id="top-navbar">
-                    <ul class="nav navbar-nav">
-                        
-                        
-						
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                <i class="ion-ios-compose f-s-20 pull-left m-r-5"></i> New <b class="caret"></b>
-                            </a>
-                            <ul class="dropdown-menu" role="menu">
-                                <li><a href="#">Action</a></li>
-                                <li><a href="#">Another action</a></li>
-                                <li><a href="#">Something else here</a></li>
-                                <li class="divider"></li>
-                                <li><a href="#">Separated link</a></li>
-                                <li class="divider"></li>
-                                <li><a href="#">One more separated link</a></li>
-                            </ul>
-                        </li>
-                    </ul>
-                </div>
+                
 				<!-- end navbar-collapse -->
 				
 				<!-- begin header navigation right -->
@@ -68,7 +57,7 @@ if (isset($this->session->userdata['logged_in'])) {
 					<li class="dropdown navbar-user">
 						<a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown">
 							<span class="user-image online">
-								<img src="assets/img/user-13.jpg" alt="" /> 
+								<img src="<?php echo base_url() ?>assets/img/user-13.jpg" alt="" /> 
 							</span>
 							<span class="hidden-xs"><?=$name?></span> <b class="caret"></b>
 						</a>
@@ -167,20 +156,19 @@ if (isset($this->session->userdata['logged_in'])) {
 		</div>
 		<div class="sidebar-bg"></div>
 		<!-- end #sidebar -->
-        <div id="content" class="content">
-			<!-- begin breadcrumb -->
+        <div style="padding-top:50px;" id="content" class="content">
 			
 			<!-- end breadcrumb -->
 			<!-- begin page-header -->
-			<h1 class="page-header">Add Feedback <small>enter details here...</small></h1>
+			<h1 class="page-header">Claims <small>view all claims here...</small></h1>
 			<!-- end page-header -->
 			
 			<!-- begin row -->
 			<div class="row">
-                <!-- begin col-6 -->
-			    <div class="col-md-6">
+			    <!-- begin col-12 -->
+			    <div class="col-md-12">
 			        <!-- begin panel -->
-                    <div class="panel panel-inverse" data-sortable-id="form-stuff-1">
+                    <div class="panel panel-inverse">
                         <div class="panel-heading">
                             <div class="panel-heading-btn">
                                 <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-default" data-click="panel-expand"><i class="fa fa-expand"></i></a>
@@ -188,77 +176,65 @@ if (isset($this->session->userdata['logged_in'])) {
                                 <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-warning" data-click="panel-collapse"><i class="fa fa-minus"></i></a>
                                 <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-danger" data-click="panel-remove"><i class="fa fa-times"></i></a>
                             </div>
-                            <h4 class="panel-title">Feedback Form</h4>
+                            <h4 class="panel-title">Deals Table - Default</h4>
                         </div>
                         <div class="panel-body">
-                            <form action="<?php echo base_url()?>Feedback/addFeedback" method="post" class="form-horizontal">
-                            <div class="form-group">
-                            <input class="hidden" name="submitted_by" value="<?=$this->feedback_management->get_id_from_roll_number($username);?>" />
-
-                                    <label class="col-md-3 control-label">Target</label>
-                                    <div class="col-md-9">
-                                    <select name="target_id" class="form-control selectpicker" data-size="10" data-live-search="true">
-                                            <option value="" selected>Select a Target</option>
-                                           
-                                            <?php $targets = $this->feedback_management->get_target_list($username);
-                                               // print_r($targets);
-                                                foreach($targets as $target){
-                                            ?>
-                                             <option value="<?=$target->id?>"><?=$target->name?></option>
-                                            <?php } ?>
-                                        </select>                                    </div>
-                                </div>
-                            <div class="form-group">
-                                    <label class="col-md-3 control-label"> Date Visited</label>
-                                    <div class="col-md-9">
-                                        <input type="text" name="date_visited" class="form-control" id="datepicker-autoClose" placeholder="Auto Close Datepicker" />
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="col-md-3 control-label">Members Visited</label>
-                                    <div class="col-md-9">
-                                    <select name="people_visited[]" class="multiple-select2 form-control" multiple="multiple">
-                                        <?php
-                                        $members = $this->member_management->read_member_info();
-                                                foreach($members as $member){ ?>
-                                                    <option value="<?=$member->id?>"><?=$member->name?></option>
-
-                                        
-                                        ?>
+                            <table id="data-table" class="table table-striped table-bordered">
+                                <thead>
+                               
+                                <h4 class="text-center">Name:<?=$member_info[0]->name?><h4>
+                                <h4 class="text-center">Roll Number:<?=$member_info[0]->roll_number?><h4>
+                                <h4 class="text-center"> Phone Number:<?=$member_info[0]->mobile_number?><h4>
+                                <br>
+                                    <tr>
+                                        <th>Sr No.</th>
+                                        <th>Reason</th>
+                                        <th>Amount</th>
+                                        <?php if($admin){?>
+                                        <th>Handle</th>
                                         <?php } ?>
-</select>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="col-md-3 control-label">Feedback</label>
-                                    <div class="col-md-9">
-                                        <textarea  name="feedback_content" type="text" class="form-control" placeholder="Default input"> </textarea>
-                                    </div>
-                                </div>
-                                
-                                           
-                                <div class="form-group">
-                                    <label class="col-md-3 control-label">Submit</label>
-                                    <div class="col-md-9">
-                                        <button type="submit" class="btn btn-sm btn-success">Add Feedback</button>
-                                    </div>
-                                </div>
-                            </form>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                <?php if($claims){
+                                 // print_r($claims);
+                                    $i = 0;
+                                    foreach($claims as $row){
+                                        $i++;
+                                         ?>
+                                <tr>
+                                   <td>
+                                <?=$i?>
+                                   </td>
+                                   <td>
+                                <?=$row->reason?>
+                                   </td>
+                                   <td>
+                                <?=$row->value?>
+                                   </td>
+                                   <?php if($admin){ ?>
+                                   <td>
+                                   <button onclick="sealclaim('<?=$row->id?>')" class="btn btn-info">Done</button>
+
+                                   </td>
+                                   <?php } ?>
+                                   </tr>
+                                <?php }} ?>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                     <!-- end panel -->
                 </div>
-                <!-- end col-6 -->
-                <!-- begin col-6 -->
-              
+                <!-- end col-12 -->
             </div>
             <!-- end row -->
-           
-            <!-- end row -->
-            <!-- begin row -->
-            
-            <!-- end row -->
 		</div>
+			        <!-- begin panel -->
+                    
+                    <!-- end panel -->
+                
 
         <!-- end theme-panel -->
 		
@@ -266,6 +242,82 @@ if (isset($this->session->userdata['logged_in'])) {
 		<a href="javascript:;" class="btn btn-icon btn-circle btn-primary btn-scroll-to-top fade" data-click="scroll-top"><i class="fa fa-angle-up"></i></a>
 		<!-- end scroll to top btn -->
 	</div>
+    <script>
+
+    function sealclaim(id){    
+        console.log(id);
+        swal({
+  title: "Are you sure?",
+  text: "!",
+  type: "success",
+  showCancelButton: true,
+  confirmButtonClass: "btn-danger",
+  confirmButtonText: "Yes, seal!",
+  closeOnConfirm: false
+},
+function(){
+    $.ajax({
+                type: 'POST',
+                url: '../ajax_sealclaim',
+                data:{
+                    'id':id,
+                },
+                cache:false,
+                
+                success: function(resp){
+                    //console.log(resp);
+                    if(resp == 'success'){
+                       //sendDelivery(id);
+                      window.location = '';
+                     // window.location = '';
+
+                    }
+
+            }
+        });
+});
+
+        
+    }
+
+
+    function deleteUser(id){    
+        swal({
+  title: "Are you sure?",
+  text: "You will not be able to recover this data!",
+  type: "warning",
+  showCancelButton: true,
+  confirmButtonClass: "btn-danger",
+  confirmButtonText: "Yes, delete!",
+  closeOnConfirm: false
+},
+function(){
+    $.ajax({
+                type: 'POST',
+                url: 'Member/ajax_deleteuser',
+                data:{
+                    'id':id,
+                },
+                cache:false,
+                
+                success: function(resp){
+                    //console.log(resp);
+                    if(resp == 'success'){
+                       //sendDelivery(id);
+                      window.location = '';
+                     // window.location = '';
+
+                    }
+
+            }
+        });
+});
+
+        
+    }
+    
+    
+    </script>
 	<!-- end page container -->
 	
 

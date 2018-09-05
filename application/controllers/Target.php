@@ -53,7 +53,8 @@ class Target extends CI_Controller {
  }
  public function confirm_deal(){
      $id = $this->input->post('id');
-     if($this->target_management->closedeal($id)){
+     $val = $this->input->post('value');
+     if($this->target_management->closedeal($id,$val)){
          echo 'success';
      }else{
          echo 'error';
