@@ -58,10 +58,36 @@ Class Target_Management extends CI_Model{
         return false;
         }
     }
+
+    public function read_inactive_targets() {
+        $this->db->select('*');
+        $this->db->from('targets');
+        $this->db->where('done',2);
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+        return $query->result();
+        } else {
+        return false;
+        }
+    }
+
     public function closedeal($id,$value){
         $da = array('id'=>$id,'value' => $value);
         $this->db->insert('deals',$da);
         $this->db->set('done', 1);
+        $this->db->where('id', $id);
+        if($this->db->update('targets')){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+   
+
+    public function makeinactive($id){
+       
+        $this->db->set('done', 2);
         $this->db->where('id', $id);
         if($this->db->update('targets')){
             return true;

@@ -126,6 +126,15 @@ public function deleteDeal(){
         echo 'error';
     }
 }
+public function makeInactive(){
+    $id = $this->input->post('id');
+    
+     if($this->target_management->makeinactive($id)){
+         echo 'success';
+     }else{
+         echo 'error';
+     }
+}
 
 }
 

@@ -12,6 +12,10 @@ if (isset($this->session->userdata['logged_in'])) {
 	}
 
 $res = $this->target_management->read_all_targets();
+if($admin){
+	$res2 = $this->target_management->read_inactive_targets();
+}
+
 $id = $this->member_management->get_id_from_username($username);
 //	echo $username;
 
@@ -184,16 +188,17 @@ $id = $this->member_management->get_id_from_username($username);
 			        <!-- end panel -->
 			        <!-- begin panel -->
 			        <div class="panel panel-inverse" >
-                        <div style="height:50px;" class="panel-heading">
+                        <div class="panel-heading">
                             <div class="pull-right">
 							<?php if($admin){ ?>
 								<a href="<?=base_url()?>Target/edit/<?=$row->id?>" class="btn btn-info">Edit</a>
 								<button onclick="close_deal(<?php echo $row->id; ?>)" style="color:black" class="btn btn-success">Close Deal</button>
 								<button onclick="delete_deal(<?php echo $row->id; ?>)" class="btn btn-danger">Cancel Deal</button>
+								<button onclick="make_inactive(<?php echo $row->id; ?>)" style="margin-top:10px;margin-bottom:10px;" class="btn btn-danger">Inactive</button>
 
 							<?php } ?>
 							</div>
-                            <h2 style="font-size:20px;margin-top:5px;" class="panel-title"><?=$row->name?></h2>
+                            <h2 style="font-size:22px;margin-top:25px;" class="panel-title"><?=$row->name?></h2>
                         </div>
                         <div class="panel-body">
 							<div data-scrollbar="true" data-height="280px">
@@ -303,6 +308,129 @@ $id = $this->member_management->get_id_from_username($username);
 			    
 			    <!-- end col-6 -->
 			</div>
+<?php 
+
+							if($admin){
+?>
+						<div class="row">
+
+						<h2>Inactive Targets  <button onclick="show()" class="btn btn-info">Show</button> <button onclick="hide()" class="btn btn-danger">Hide</button>	</h2>
+						
+						
+				<!-- begin col-6 -->
+			<?php 
+			
+			if($res2){
+				
+				if(!$admin){
+				$res = $this->target_management->filter_from_targets($username,$res);
+				}
+				//print_r($res1);
+				
+				foreach($res2 as $row){ ?>
+				
+			    <div  class="col-md-6 inactive_tar hidden">
+			        <!-- begin panel -->
+			        
+			        <!-- end panel -->
+			        <!-- begin panel -->
+			        
+			        <!-- end panel -->
+			        <!-- begin panel -->
+			        
+			        <!-- end panel -->
+			        <!-- begin panel -->
+			        <div class="panel panel-inverse" >
+                        <div style="height:50px;" class="panel-heading">
+                            <div class="pull-right">
+							
+							</div>
+                            <h2 style="font-size:20px;margin-top:5px;" class="panel-title"><?=$row->name?></h2>
+                        </div>
+                        <div class="panel-body">
+							<div data-scrollbar="true" data-height="280px">
+								<h6> Address</h6>
+							<p>
+							<?=str_replace('\n', "\n", $row->address)?>
+			</p>	
+							<h6> Contact Number </h6>
+							<p> +91 <?=$row->mobile_number?></p>
+							<br>
+							<p> <?=$row->instructions?>
+							<h3> Members Assigned <i></i></h3>
+							<table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Member Name</th>
+
+									
+                                    </tr>
+                                </thead>
+                                <tbody>
+									<?php 
+									$names = $this->target_management->get_names($row->id);
+									if(count($names)>0){foreach($names as $name){ ?>
+                                    <tr>
+                                        <td><?=$name['name']?></td>
+										
+									</tr>
+                                    <?php }}?>
+                                </tbody>
+							</table> 
+
+							
+							
+							
+						<?php
+										$feedbacks = $this->feedback_management->get_feedback_list($row->id);
+									//	print_r($feedbacks);
+										
+									?>
+							<h3> Feedbacks</h3>
+							<ul class="media-list media-list-with-divider">
+								<?php foreach($feedbacks as $feedback){ ?>
+								<li class="media media-sm">
+									
+							<h5> Date Visited: <?=$feedback->date_visited?></h5>
+							<h5> People Visited: <?php
+							$numItems = count(json_decode($feedback->people_visited));
+							$i = 0;
+							foreach(json_decode($feedback->people_visited) as $key=>$id ){
+								if(++$i === $numItems) {
+									echo $this->feedback_management->get_name_from_id($id);	
+								  }else{
+									echo $this->feedback_management->get_name_from_id($id).", ";
+								  }
+								
+								
+							}
+							?></h5>
+							<h5> Submitted By: <?=$this->feedback_management->get_name_from_id($feedback->submitted_by);?> </h5>
+							<p> <strong>Feedback:</strong> <?=$feedback->feedback_content?></p>
+</li>
+
+<?php } ?>
+
+</ul>
+							</div>
+							
+                        </div>
+                    </div>
+			        <!-- end panel -->
+			        <!-- begin panel -->
+			        
+			        <!-- end panel -->
+			        <!-- begin panel -->
+			        
+			        <!-- end panel -->
+				</div>
+			<?php }} ?>
+			    <!-- end col-6 -->
+			    <!-- begin col-6 -->
+			    
+			    <!-- end col-6 -->
+			</div>
+						<?php } ?>
 			<!-- end row -->
 			
 			
@@ -313,6 +441,8 @@ $id = $this->member_management->get_id_from_username($username);
 			
 			<!-- end row -->
 		</div>
+
+		
 
         <!-- end theme-panel -->
 		
@@ -410,6 +540,40 @@ function(){
 
 
 
+				function make_inactive(id){
+			swal({
+  title: "Are you sure?",
+  text: "",
+  type: "warning",
+  showCancelButton: true,
+  confirmButtonClass: "btn-info",
+  confirmButtonText: "Yes, make inactive!",
+  closeOnConfirm: false
+},
+function(){
+    $.ajax({
+                type: 'POST',
+                url: 'Target/makeInactive',
+                data:{
+                    'id':id
+                },
+                success: function(resp){
+                    //console.log(resp);
+                    if(resp == 'success'){
+                       //sendDelivery(id);
+                      window.location = '';
+                     // window.location = '';
+
+                    }
+
+            }
+});
+			
+		});
+		}
+
+
+
 
 		function close_deal(id){
 			swal({
@@ -447,6 +611,13 @@ function(inputValue){
 });
 			
 		});
+		}
+		function show(){
+			$('.inactive_tar').removeClass('hidden');
+			$('.inactive_tar').removeClass('show');
+		}
+		function hide(){
+			$('.inactive_tar').addClass('hidden');
 		}
 		
 												
