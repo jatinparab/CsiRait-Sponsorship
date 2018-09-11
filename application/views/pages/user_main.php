@@ -189,6 +189,8 @@ $id = $this->member_management->get_id_from_username($username);
 							<?php if($admin){ ?>
 								<a href="<?=base_url()?>Target/edit/<?=$row->id?>" class="btn btn-info">Edit</a>
 								<button onclick="close_deal(<?php echo $row->id; ?>)" style="color:black" class="btn btn-success">Close Deal</button>
+								<button onclick="delete_deal(<?php echo $row->id; ?>)" class="btn btn-danger">Cancel Deal</button>
+
 							<?php } ?>
 							</div>
                             <h2 style="font-size:20px;margin-top:5px;" class="panel-title"><?=$row->name?></h2>
@@ -373,6 +375,42 @@ function(){
 			
 		});
 		}
+
+				function delete_deal(id){
+			swal({
+  title: "Are you sure?",
+  text: "You will not be able to recover this data!",
+  type: "warning",
+  showCancelButton: true,
+  confirmButtonClass: "btn-danger",
+  confirmButtonText: "Yes, delete!",
+  closeOnConfirm: false
+},
+function(){
+    $.ajax({
+                type: 'POST',
+                url: 'Target/deleteDeal',
+                data:{
+                    'id':id
+                },
+                success: function(resp){
+                    //console.log(resp);
+                    if(resp == 'success'){
+                       //sendDelivery(id);
+                      window.location = '';
+                     // window.location = '';
+
+                    }
+
+            }
+});
+			
+		});
+		}
+
+
+
+
 		function close_deal(id){
 			swal({
   title: "Are you sure?",

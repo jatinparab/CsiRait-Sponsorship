@@ -118,6 +118,15 @@ public function delete(){
  //redirect('/logout');
 }
 
+public function deleteDeal(){
+    $id = $this->input->post('id');
+    if($this->target_management->deletetarget($id)){
+        echo 'success';
+    }else{
+        echo 'error';
+    }
+}
+
 }
 
 

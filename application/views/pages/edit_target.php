@@ -3,9 +3,9 @@
 	//$this -> load -> session();
 	//session_start();
 //print_r($this->session->userdata['logged_in']);
-if (isset($this->session->userdata['logged_in']) && $admin == 1) {
+if (isset($this->session->userdata['logged_in'])) {
 	$name = ($this->session->userdata['logged_in']['name']);
-	$admin = ($this->session->userdata['logged_in']['username']);
+	$admin = ($this->session->userdata['logged_in']['admin']);
 
 	$username = ($this->session->userdata['logged_in']['username']);
 	}

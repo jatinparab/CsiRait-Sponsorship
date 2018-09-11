@@ -69,6 +69,8 @@ Class Target_Management extends CI_Model{
             return false;
         }
     }
+
+    
     public function filter_from_targets($username,$res){
         $this->db->select('*');
         $this->db->from('members');
